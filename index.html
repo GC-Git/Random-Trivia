@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- You MUST include jQuery before Fomantic -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
+
+    <!-- VUE JS -->
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <!-- production version, optimized for size and speed -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2"></script> -->
+
+    <!-- CUSTOM CSS -->
+    <link rel="stylesheet" href="./styles.css">
+
+    <title>Document</title>
+</head>
+<body>
+    <div id="app" class="ui container">
+        <h1 class="ui header" id="mainHeader">{{title}}</h1>
+        <h2 class="ui header" id="categoryName">{{currentCategoryName}}</h2>
+        <!-- Show form only if the questions object has stuff in it -->
+        <form v-if="questions.length" id="questionsForm" class="ui form">
+            <!-- Loop through each question -->
+            <div class="ui segment" v-for="(question, questionIndex) in questions">
+                <h3>
+                    {{ questionIndex+1 + ". " + domDecoder(question.question) }}
+                </h3>
+                <!-- Loop through each possible answer and creates a radio button -->
+                <div class="field" v-for="(answer, answerIndex) in question.incorrect_answers">
+                    <div class="ui radio checkbox">
+                        <input  type="radio"
+                                class="questionOption" 
+                                tabindex="0" 
+                                :name="'answer'+questionIndex"
+                                :id="'inputq'+questionIndex+'a'+answerIndex"  
+                                v-model="questions[questionIndex].chosen_answer"
+                                @click="setChosenAnswerIndex(questionIndex, answerIndex)"
+                                :value="answer">
+                        <label :id="'q'+questionIndex+'a'+answerIndex" v-bind:for="'inputq'+questionIndex+'a'+answerIndex">{{ domDecoder(answer)}}</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button 
+                type="submit" 
+                id="submitButton"
+                v-on:click.prevent="submit()" 
+                class="ui button">
+                Submit</button>
+            <button 
+                type="button" 
+                id="moreQuestionsButton"
+                @click.prevent="getQuestions()" 
+                class="ui button"
+                style="display: none;">
+                Load More Questions</button>
+            <div 
+                v-if="totalQuestionsAnswered > 0" 
+                class="ui label large middle aligned"
+                id="scoreLabel"
+                v-bind:class="{red: correctPercentage<70, green: correctPercentage>=70}">
+                <div id="scoreDetail" class="detail">{{totalQuestionsCorrect+"/"+totalQuestionsAnswered}}</div>    
+                {{correctPercentage}}%
+            </div>
+        </form>
+    </div>
+
+    <!-- Vue errors if this isnt at the bottom -->
+    <script src="./index.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+#app {
+    padding: 2em 2em 2em 50px;
+}
+
+[hidden] { display:none !important;}
+
+.ban.icon {
+    color: red;
+}
+
+.check.circle.icon {
+    color: green;
+}
+
+#scoreLabel {
+    float: right;
+}
+
+#scoreDetail {
+    float: right;
+    opacity: 100;
+}
